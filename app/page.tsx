@@ -56,24 +56,31 @@ export default function TeamPerformanceDashboard() {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
-      .then(response => response.text())
-      .then(text => {
-        const rows = text.split('\n').slice(1) // Remove header row
-        const parsedData: CategoryData[] = rows.map(row => {
-          const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
-          return {
-            conceptName,
-            categoryName,
-            revenuePoints: parseInt(revenuePoints),
-            marginPoints: parseInt(marginPoints),
-            ordersPoints: parseInt(ordersPoints),
-            totalPoints: parseInt(totalPoints)
-          }
-        })
-        setCategoryData(parsedData)
+  fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
+    .then(response => response.text())
+    .then(text => {
+      const rows = text.split('\n').slice(1) // Remove header row
+      const parsedData = rows.map(row => {
+        const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
+        return {
+          conceptName: conceptName || '',
+          categoryName: categoryName || '',
+          revenuePoints: Number(revenuePoints) || 0,
+          marginPoints: Number(marginPoints) || 0,
+          ordersPoints: Number(ordersPoints) || 0,
+          totalPoints: Number(totalPoints) || 0
+        }
       })
-  }, [])
+      setCategoryData(parsedData.filter(item => 
+        item.conceptName && 
+        item.categoryName && 
+        !isNaN(item.revenuePoints) && 
+        !isNaN(item.marginPoints) && 
+        !isNaN(item.ordersPoints) && 
+        !isNaN(item.totalPoints)
+      ))
+    })
+}, [])
 
   const handleReveal = () => {
     setIsCountingDown(true)

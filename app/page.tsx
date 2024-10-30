@@ -69,37 +69,32 @@ export default function TeamPerformanceDashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
-        const text = await response.text()
-        const rows = text.split('\n').slice(1) // Remove header row
+  try {
+    const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
+    const text = await response.text()
+    const rows = text.split('\n').slice(1) // Remove header row
+    
+    const validData = rows
+      .map(row => {
+        const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
+        if (!conceptName || !categoryName) return null
         
-        const validData: CategoryData[] = rows
-          .map(row => {
-            const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
-            return {
-              conceptName: conceptName?.trim() ?? '',
-              categoryName: categoryName?.trim() ?? '',
-              revenuePoints: Number(revenuePoints) || 0,
-              marginPoints: Number(marginPoints) || 0,
-              ordersPoints: Number(ordersPoints) || 0,
-              totalPoints: Number(totalPoints) || 0
-            }
-          })
-          .filter(item => 
-            item.conceptName && 
-            item.categoryName && 
-            !isNaN(item.revenuePoints) && 
-            !isNaN(item.marginPoints) && 
-            !isNaN(item.ordersPoints) && 
-            !isNaN(item.totalPoints)
-          )
-        
-        setCategoryData(validData)
-      } catch (error) {
-        console.error('Error fetching category data:', error)
-      }
-    }
+        return {
+          conceptName: conceptName.trim(),
+          categoryName: categoryName.trim(),
+          revenuePoints: Number(revenuePoints) || 0,
+          marginPoints: Number(marginPoints) || 0,
+          ordersPoints: Number(ordersPoints) || 0,
+          totalPoints: Number(totalPoints) || 0
+        }
+      })
+      .filter((item): item is CategoryData => item !== null)
+    
+    setCategoryData(validData)
+  } catch (error) {
+    console.error('Error fetching category data:', error)
+  }
+}
 
     fetchData()
   }, [])

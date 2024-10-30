@@ -91,7 +91,7 @@ export default function TeamPerformanceDashboard() {
           })
           .filter((item): item is CategoryData => item !== null)
         
-        setCategoryData(parsedData)
+        setCategoryData(parsedData as CategoryData[])
       } catch (error) {
         console.error('Error fetching category data:', error)
       }

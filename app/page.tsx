@@ -283,7 +283,6 @@ export default function TeamPerformanceDashboard() {
       {showConfetti && (
         <Confetti
           width={typeof window !== 'undefined' ? window.innerWidth : 300}
-          
           height={typeof window !== 'undefined' ? window.innerHeight : 200}
           recycle={false}
           numberOfPieces={500}
@@ -294,103 +293,4 @@ export default function TeamPerformanceDashboard() {
       {isRevealed && (
         <>
           <motion.h1 
-            className="text-5xl font-bold text-center mb-12 text-[#0A3641]"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            White Wednesday Fantasy League Results
-          </motion.h1>
-
-          <Tabs defaultValue="team" className="max-w-7xl mx-auto">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="team">Team Performance</TabsTrigger>
-              <TabsTrigger value="category">Category Performance</TabsTrigger>
-            </TabsList>
-            <TabsContent value="team">
-              <div className="space-y-12">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-                >
-                  {/* Podium */}
-                  {topThreeTeams.map((team, index) => {
-                    const icon = index === 0 ? <Trophy className="w-12 h-12 text-yellow-500" /> :
-                              index === 1 ? <Medal className="w-10 h-10 text-gray-400" /> :
-                              <Award className="w-8 h-8 text-orange-400" />
-                    return (
-                      <motion.div
-                        key={team.teamName}
-                        className="flex flex-col justify-end"
-                        initial={{ y: 50, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ 
-                          duration: 0.5,
-                          delay: index * 0.2
-                        }}
-                      >
-                        <Card className="bg-white shadow-lg border-t-4 border-[#5CBDB9] h-full flex flex-col justify-between">
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-2xl font-bold flex items-center justify-between">
-                              <span className="mr-2">{index + 1}.</span>
-                              {icon}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="pt-2 flex flex-col items-center text-center">
-                            <h3 className="text-xl font-semibold mb-2">{team.teamName}</h3>
-                            <p className="text-lg mb-4 text-gray-600">{team.member}</p>
-                            <Badge variant="secondary" className="bg-[#5CBDB9] text-white text-lg px-4 py-2">
-                              {team.totalPoints} points
-                            </Badge>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    )
-                  })}
-                </motion.div>
-
-                {/* Total Points Leaderboard */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {renderLeaderboard('totalPoints')}
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
-                  {['revenuePoints', 'marginPoints', 'orderPoints'].map((category, index) => (
-                    <motion.div
-                      key={category}
-                      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      {renderLeaderboard(category as Category)}
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </TabsContent>
-            <TabsContent value="category">
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                {renderCategoryPerformance()}
-              </motion.div>
-            </TabsContent>
-          </Tabs>
-        </>
-      )}
-    </div>
-  )
-}
+            className

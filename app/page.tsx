@@ -13,7 +13,8 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from 'next/image'
 
-type CategoryData = {
+// Define interfaces for our data structures
+interface CategoryData {
   conceptName: string
   categoryName: string
   revenuePoints: number
@@ -22,7 +23,16 @@ type CategoryData = {
   totalPoints: number
 }
 
-const leaderboardData = [
+interface LeaderboardEntry {
+  teamName: string
+  revenuePoints: number
+  marginPoints: number
+  orderPoints: number
+  totalPoints: number
+  member: string
+}
+
+const leaderboardData: LeaderboardEntry[] = [
   { teamName: "White Wednesday Warrior", revenuePoints: 69, marginPoints: 71, orderPoints: 76, totalPoints: 216, member: "Atul Mishra" },
   { teamName: "WWS Savvy Sellers", revenuePoints: 82, marginPoints: 80, orderPoints: 50, totalPoints: 212, member: "Anusha" },
   { teamName: "Supply Chain Punters", revenuePoints: 64, marginPoints: 66, orderPoints: 63, totalPoints: 193, member: "Sahil Arora" },
@@ -40,8 +50,10 @@ const leaderboardData = [
   { teamName: "So far So good", revenuePoints: 37, marginPoints: 39, orderPoints: 43, totalPoints: 119, member: "Inchara" }
 ]
 
-const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'orderPoints']
-const categoryNames = {
+const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'orderPoints'] as const
+type Category = typeof categories[number]
+
+const categoryNames: Record<Category, string> = {
   totalPoints: 'Total Points',
   revenuePoints: 'Revenue Points',
   marginPoints: 'Margin Points',
@@ -53,34 +65,44 @@ export default function TeamPerformanceDashboard() {
   const [isCountingDown, setIsCountingDown] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [categoryData, setCategoryData] = useState<CategoryData[]>([])
-  const containerRef = useRef(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-  fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
-    .then(response => response.text())
-    .then(text => {
-      const rows = text.split('\n').slice(1) // Remove header row
-      const parsedData = rows.map(row => {
-        const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
-        return {
-          conceptName: conceptName || '',
-          categoryName: categoryName || '',
-          revenuePoints: Number(revenuePoints) || 0,
-          marginPoints: Number(marginPoints) || 0,
-          ordersPoints: Number(ordersPoints) || 0,
-          totalPoints: Number(totalPoints) || 0
-        }
-      })
-      setCategoryData(parsedData.filter(item => 
-        item.conceptName && 
-        item.categoryName && 
-        !isNaN(item.revenuePoints) && 
-        !isNaN(item.marginPoints) && 
-        !isNaN(item.ordersPoints) && 
-        !isNaN(item.totalPoints)
-      ))
-    })
-}, [])
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
+        const text = await response.text()
+        const rows = text.split('\n').slice(1) // Remove header row
+        
+        const validData: CategoryData[] = rows
+          .map(row => {
+            const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
+            return {
+              conceptName: conceptName?.trim() ?? '',
+              categoryName: categoryName?.trim() ?? '',
+              revenuePoints: Number(revenuePoints) || 0,
+              marginPoints: Number(marginPoints) || 0,
+              ordersPoints: Number(ordersPoints) || 0,
+              totalPoints: Number(totalPoints) || 0
+            }
+          })
+          .filter(item => 
+            item.conceptName && 
+            item.categoryName && 
+            !isNaN(item.revenuePoints) && 
+            !isNaN(item.marginPoints) && 
+            !isNaN(item.ordersPoints) && 
+            !isNaN(item.totalPoints)
+          )
+        
+        setCategoryData(validData)
+      } catch (error) {
+        console.error('Error fetching category data:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const handleReveal = () => {
     setIsCountingDown(true)
@@ -95,7 +117,7 @@ export default function TeamPerformanceDashboard() {
     }, 5000)
   }
 
-  const renderLeaderboard = (category) => {
+  const renderLeaderboard = (category: Category) => {
     const sortedData = [...leaderboardData].sort((a, b) => b[category] - a[category])
     return (
       <Card className="bg-white shadow-lg h-full">
@@ -178,7 +200,7 @@ export default function TeamPerformanceDashboard() {
     )
   }
 
-  const topThreeTeams = leaderboardData.sort((a, b) => b.totalPoints - a.totalPoints).slice(0, 3)
+  const topThreeTeams = [...leaderboardData].sort((a, b) => b.totalPoints - a.totalPoints).slice(0, 3)
 
   return (
     <div ref={containerRef} className="min-h-screen bg-white text-[#0A3641] p-8 space-y-12">
@@ -261,6 +283,7 @@ export default function TeamPerformanceDashboard() {
       {showConfetti && (
         <Confetti
           width={typeof window !== 'undefined' ? window.innerWidth : 300}
+          
           height={typeof window !== 'undefined' ? window.innerHeight : 200}
           recycle={false}
           numberOfPieces={500}
@@ -288,7 +311,7 @@ export default function TeamPerformanceDashboard() {
               <div className="space-y-12">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity:  1, scale: 1 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5 }}
                   className="grid grid-cols-1 lg:grid-cols-3 gap-8"
                 >
@@ -350,7 +373,7 @@ export default function TeamPerformanceDashboard() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                      {renderLeaderboard(category)}
+                      {renderLeaderboard(category as Category)}
                     </motion.div>
                   ))}
                 </motion.div>

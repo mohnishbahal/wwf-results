@@ -27,44 +27,44 @@ interface LeaderboardEntry {
   teamName: string
   revenuePoints: number
   marginPoints: number
-  orderPoints: number
+  ordersPoints: number
   totalPoints: number
   member: string
 }
 
 const leaderboardData: LeaderboardEntry[] = [
-  { teamName: "White Wednesday Warrior", revenuePoints: 69, marginPoints: 71, orderPoints: 76, totalPoints: 216, member: "Atul Mishra" },
-  { teamName: "WWS Savvy Sellers", revenuePoints: 82, marginPoints: 80, orderPoints: 50, totalPoints: 212, member: "Anusha" },
-  { teamName: "Supply Chain Punters", revenuePoints: 64, marginPoints: 66, orderPoints: 63, totalPoints: 193, member: "Sahil Arora" },
-  { teamName: "Jai WWS", revenuePoints: 61, marginPoints: 62, orderPoints: 66, totalPoints: 189, member: "Jai" },
-  { teamName: "Shopping Basket", revenuePoints: 62, marginPoints: 62, orderPoints: 59, totalPoints: 183, member: "Saurabh Heda" },
-  { teamName: "Stockpile Squad", revenuePoints: 56, marginPoints: 60, orderPoints: 67, totalPoints: 183, member: "Deepesh" },
-  { teamName: "JP_FL", revenuePoints: 54, marginPoints: 60, orderPoints: 65, totalPoints: 179, member: "Jijesh Pillai" },
-  { teamName: "North Star", revenuePoints: 60, marginPoints: 60, orderPoints: 48, totalPoints: 168, member: "Nitesh" },
-  { teamName: "KKR", revenuePoints: 51, marginPoints: 56, orderPoints: 56, totalPoints: 163, member: "Kartikey" },
-  { teamName: "AM", revenuePoints: 59, marginPoints: 58, orderPoints: 42, totalPoints: 159, member: "Aniket" },
-  { teamName: "SM WWF", revenuePoints: 55, marginPoints: 53, orderPoints: 48, totalPoints: 156, member: "Swetaleena" },
-  { teamName: "SuperSaver", revenuePoints: 51, marginPoints: 52, orderPoints: 43, totalPoints: 146, member: "Akshaya" },
-  { teamName: "Category Champions", revenuePoints: 49, marginPoints: 56, orderPoints: 40, totalPoints: 145, member: "Ankita" },
-  { teamName: "Top Tier Trio", revenuePoints: 41, marginPoints: 41, orderPoints: 52, totalPoints: 134, member: "Divek" },
-  { teamName: "So far So good", revenuePoints: 37, marginPoints: 39, orderPoints: 43, totalPoints: 119, member: "Inchara" }
+  { teamName: "White Wednesday Warrior", revenuePoints: 69, marginPoints: 71, ordersPoints: 76, totalPoints: 216, member: "Atul Mishra" },
+  { teamName: "WWS Savvy Sellers", revenuePoints: 82, marginPoints: 80, ordersPoints: 50, totalPoints: 212, member: "Anusha" },
+  { teamName: "Supply Chain Punters", revenuePoints: 64, marginPoints: 66, ordersPoints: 63, totalPoints: 193, member: "Sahil Arora" },
+  { teamName: "Jai WWS", revenuePoints: 61, marginPoints: 62, ordersPoints: 66, totalPoints: 189, member: "Jai" },
+  { teamName: "Shopping Basket", revenuePoints: 62, marginPoints: 62, ordersPoints: 59, totalPoints: 183, member: "Saurabh Heda" },
+  { teamName: "Stockpile Squad", revenuePoints: 56, marginPoints: 60, ordersPoints: 67, totalPoints: 183, member: "Deepesh" },
+  { teamName: "JP_FL", revenuePoints: 54, marginPoints: 60, ordersPoints: 65, totalPoints: 179, member: "Jijesh Pillai" },
+  { teamName: "North Star", revenuePoints: 60, marginPoints: 60, ordersPoints: 48, totalPoints: 168, member: "Nitesh" },
+  { teamName: "KKR", revenuePoints: 51, marginPoints: 56, ordersPoints: 56, totalPoints: 163, member: "Kartikey" },
+  { teamName: "AM", revenuePoints: 59, marginPoints: 58, ordersPoints: 42, totalPoints: 159, member: "Aniket" },
+  { teamName: "SM WWF", revenuePoints: 55, marginPoints: 53, ordersPoints: 48, totalPoints: 156, member: "Swetaleena" },
+  { teamName: "SuperSaver", revenuePoints: 51, marginPoints: 52, ordersPoints: 43, totalPoints: 146, member: "Akshaya" },
+  { teamName: "Category Champions", revenuePoints: 49, marginPoints: 56, ordersPoints: 40, totalPoints: 145, member: "Ankita" },
+  { teamName: "Top Tier Trio", revenuePoints: 41, marginPoints: 41, ordersPoints: 52, totalPoints: 134, member: "Divek" },
+  { teamName: "So far So good", revenuePoints: 37, marginPoints: 39, ordersPoints: 43, totalPoints: 119, member: "Inchara" }
 ]
 
-const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'orderPoints'] as const
+const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'ordersPoints'] as const
 type Category = typeof categories[number]
 
 const categoryNames: Record<Category, string> = {
   totalPoints: 'Total Points',
   revenuePoints: 'Revenue Points',
   marginPoints: 'Margin Points',
-  orderPoints: 'Order Points'
+  ordersPoints: 'Order Points'
 }
 
 export default function TeamPerformanceDashboard() {
   const [isRevealed, setIsRevealed] = useState(false)
   const [isCountingDown, setIsCountingDown] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [categoryData, setCategoryData] = useState<CategoryData[]>([])
+  const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'ordersPoints'] as const
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

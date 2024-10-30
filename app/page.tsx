@@ -50,6 +50,7 @@ const leaderboardData: LeaderboardEntry[] = [
   { teamName: "So far So good", revenuePoints: 37, marginPoints: 39, ordersPoints: 43, totalPoints: 119, member: "Inchara" }
 ]
 
+// Define categories once, at the top level
 const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'ordersPoints'] as const
 type Category = typeof categories[number]
 
@@ -64,37 +65,37 @@ export default function TeamPerformanceDashboard() {
   const [isRevealed, setIsRevealed] = useState(false)
   const [isCountingDown, setIsCountingDown] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  const categories = ['totalPoints', 'revenuePoints', 'marginPoints', 'ordersPoints'] as const
+  const [categoryData, setCategoryData] = useState<CategoryData[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchData = async () => {
-  try {
-    const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
-    const text = await response.text()
-    const rows = text.split('\n').slice(1) // Remove header row
-    
-    const validData = rows
-      .map(row => {
-        const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
-        if (!conceptName || !categoryName) return null
+      try {
+        const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/W1%20Points-3zMSxdO3d5ZZUSrES28yUkLT0cDWCp.csv')
+        const text = await response.text()
+        const rows = text.split('\n').slice(1) // Remove header row
         
-        return {
-          conceptName: conceptName.trim(),
-          categoryName: categoryName.trim(),
-          revenuePoints: Number(revenuePoints) || 0,
-          marginPoints: Number(marginPoints) || 0,
-          ordersPoints: Number(ordersPoints) || 0,
-          totalPoints: Number(totalPoints) || 0
-        }
-      })
-      .filter((item): item is CategoryData => item !== null)
-    
-    setCategoryData(validData)
-  } catch (error) {
-    console.error('Error fetching category data:', error)
-  }
-}
+        const parsedData: CategoryData[] = rows
+          .map(row => {
+            const [conceptName, categoryName, revenuePoints, marginPoints, ordersPoints, totalPoints] = row.split(',')
+            if (!conceptName || !categoryName) return null
+            
+            return {
+              conceptName: conceptName.trim(),
+              categoryName: categoryName.trim(),
+              revenuePoints: Number(revenuePoints) || 0,
+              marginPoints: Number(marginPoints) || 0,
+              ordersPoints: Number(ordersPoints) || 0,
+              totalPoints: Number(totalPoints) || 0
+            }
+          })
+          .filter((item): item is CategoryData => item !== null)
+        
+        setCategoryData(parsedData)
+      } catch (error) {
+        console.error('Error fetching category data:', error)
+      }
+    }
 
     fetchData()
   }, [])
